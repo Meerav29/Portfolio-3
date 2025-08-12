@@ -12,37 +12,22 @@ const ORBIT_TILT: [number, number, number] = [Math.PI / 2.8, 0.2, 0];
 function Planet() {
   const planetRef = useRef<THREE.Mesh>(null!);
   useFrame((_, delta) => {
-    if (planetRef.current) {
-      planetRef.current.rotation.y += delta * 0.1; // slow spin
-    }
+    planetRef.current.rotation.y += delta * 0.1;
   });
   return (
     <mesh ref={planetRef} position={[0, 0, 0]} castShadow receiveShadow>
       <sphereGeometry args={[1.2, 96, 96]} />
-      {/* Rich, dark material with slight sheen */}
-      <meshStandardMaterial
-        color="#10131a"
-        roughness={0.75}
-        metalness={0.05}
-      />
-      {/* Subtle city/night lights tint */}
-      <meshPhongMaterial
-        attach="material-1"
-        color="#0f1a2a"
-        shininess={10}
-        opacity={0.12}
-        transparent
-        blending={1}
-      />
+      <meshStandardMaterial color="#1f2937" roughness={0.85} metalness={0.1} />
     </mesh>
   );
 }
 
+
 function OrbitRing() {
   return (
-    <mesh rotation={[Math.PI / 2.8, 0.2, 0]}> {/* tilt for aesthetics */}
-      <torusGeometry args={[2.1, 0.01, 16, 256]} />
-      <meshBasicMaterial color="#dbeafe" opacity={0.3} transparent />
+    <mesh rotation={ORBIT_TILT}>
+      <torusGeometry args={[ORBIT_RADIUS, 0.012, 16, 256]} />
+      <meshBasicMaterial color="#dbeafe" opacity={0.35} transparent />
     </mesh>
   );
 }
@@ -50,13 +35,11 @@ function OrbitRing() {
 function MoonOrbit() {
   const group = useRef<THREE.Group>(null!);
   useFrame((_, delta) => {
-    if (group.current) {
-      group.current.rotation.y += delta * 0.4; // orbit speed
-    }
+    group.current.rotation.y += delta * 0.4; // orbit speed
   });
   return (
-    <group ref={group} rotation={[0.25, 0.2, 0]}> {/* slight inclination */}
-      <mesh position={[2.1, 0, 0]} castShadow>
+    <group ref={group} rotation={ORBIT_TILT}>
+      <mesh position={[ORBIT_RADIUS, 0, 0]} castShadow>
         <sphereGeometry args={[0.25, 48, 48]} />
         <meshStandardMaterial color="#cbd5e1" roughness={0.6} metalness={0.05} />
       </mesh>
@@ -64,23 +47,18 @@ function MoonOrbit() {
   );
 }
 
+
 function Lights() {
   return (
     <>
       <ambientLight intensity={0.35} />
-      {/* Key light */}
-      <directionalLight
-        position={[3, 2, 4]}
-        intensity={1.1}
-        castShadow
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
-      />
-      {/* Rim light for glow */}
+      <hemisphereLight intensity={0.4} color="#ffffff" groundColor="#0b1220" />
+      <directionalLight position={[3, 2, 4]} intensity={1.1} castShadow />
       <pointLight position={[-4, -2, -3]} intensity={0.6} />
     </>
   );
 }
+
 
 function FallbackNoWebGL() {
   return (
