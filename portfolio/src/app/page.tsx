@@ -5,6 +5,8 @@ import { Html } from "@react-three/drei";
 import { motion } from "framer-motion";
 import * as THREE from "three";
 
+const ORBIT_RADIUS = 2.1;
+const ORBIT_TILT: [number, number, number] = [Math.PI / 2.8, 0.2, 0];
 
 // ===== 3D Scene Components =====
 function Planet() {
